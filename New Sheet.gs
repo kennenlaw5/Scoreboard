@@ -8,7 +8,7 @@ function duplicate() {
   var target;var rows=[];var j=0;var final=[];
   var numRows=primary.getLastRow()-2;var teamRows=[13,20,27,35,42];
   var range=primary.getRange(3,2,numRows,10).getValues();
-  var rangefill=[];var check=false;
+  var rangefill=[];var check=false;var date;
   for(var i=0;i<teamRows.length;i++){
     rangefill[i]=template.getRange(parseInt(teamRows[i]),6,1,19).getFormulas();
   }
@@ -32,19 +32,33 @@ function duplicate() {
     }
     row+=1;
   }
-  var input = ui.prompt('Enter Scoreboard Date','Enter the name of the sheet to be created:',ui.ButtonSet.OK_CANCEL);
-  Logger.log(input.getResponseText());
-  if (input.getSelectedButton() == ui.Button.OK) {
-    template.copyTo(ss).setName(input.getResponseText());
-    target=ss.getSheetByName(input.getResponseText());
-    ss.setActiveSheet(target);
-    target.getRange(6,6,numRows,19).setValues(rows);
-    
-    //Intentionally error out the Loading Chart to clean it up by deleting names from the reports
-    ss.getSheetByName("Fresh Up").getRange('A:A').setValue('Needs Updated!');
-    ss.getSheetByName("Phone Up").getRange('A:A').setValue('Needs Updated!');
-    ss.getSheetByName("Internet Up").getRange('A:A').setValue('Needs Updated!');
-  } else if (input.getSelectedButton() == ui.Button.CANCEL) {
-    Logger.log('User cancelled');
+  check=false;
+  while(!check){
+    var input = ui.prompt('Enter Scoreboard Date','Enter the name of the sheet to be created in the format "MM/DD/YY":',ui.ButtonSet.OK_CANCEL);
+    if (input.getSelectedButton() == ui.Button.OK) {
+      date=input.getResponseText();
+      date=date.replace("-","/");
+      date=date.replace("-","/");
+      if(date.indexOf('/')==-1||date.split('/').length!=3){ui.alert('Error!', 'The date must be divided by a "/". Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);}
+      else{
+        date=date.split('/');
+        if(date[0].length!=2||parseInt(date[0])<1||parseInt(date[0])>12){
+          ui.alert('Error!', 'The month must have a preceding 0 (if it is less than 10) and be a valid month (between 1 and 12). Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
+        }else if(date[1].length!=2||parseInt(date[1])<1||parseInt(date[1])>31){
+          ui.alert('Error!', 'The day must have a preceding 0 (if it is less than 10) and be a valid day (between 1 and 31). Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
+        }else if(date[2].length!=2){
+          ui.alert('Error!', 'The year must be the last two values of the year only. Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
+        }else{check=true;}
+      }
+    }else{ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return;}
   }
+  template.copyTo(ss).setName(input.getResponseText());
+  target=ss.getSheetByName(input.getResponseText());
+  ss.setActiveSheet(target);
+  target.getRange(6,6,numRows,19).setValues(rows);
+  
+  //Intentionally error out the Loading Chart to clean it up by deleting names from the reports
+  ss.getSheetByName("Fresh Up").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("Phone Up").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("Internet Up").getRange('A:A').setValue('Needs Updated!');
 }
