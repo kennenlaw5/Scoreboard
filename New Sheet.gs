@@ -6,9 +6,11 @@ function duplicate() {
   var template=ss.getSheetByName('Master');
   var primary=ss.getSheetByName("LoadingChart");
   var target;var rows=[];var j=0;var final=[];
-  var numRows=primary.getLastRow()-2;var teamRows=[13,20,27,35,42];
+  var numRows=primary.getLastRow()-2;var teamRows=[13,20,27,34,42];
   var range=primary.getRange(3,2,numRows,10).getValues();
   var rangefill=[];var check=false;var date;
+  var curYear=primary.getRange(1,1).getDisplayValue();
+  var input;var input2;
   for(var i=0;i<teamRows.length;i++){
     rangefill[i]=template.getRange(parseInt(teamRows[i]),6,1,19).getFormulas();
   }
@@ -34,7 +36,7 @@ function duplicate() {
   }
   check=false;
   while(!check){
-    var input = ui.prompt('Enter Scoreboard Date','Enter the name of the sheet to be created in the format "MM/DD/YY":',ui.ButtonSet.OK_CANCEL);
+    input = ui.prompt('Enter Scoreboard Date','Enter the name of the sheet to be created in the format "MM/DD/YY":',ui.ButtonSet.OK_CANCEL);
     if (input.getSelectedButton() == ui.Button.OK) {
       date=input.getResponseText();
       date=date.replace("-","/");
@@ -48,6 +50,9 @@ function duplicate() {
           ui.alert('Error!', 'The day must have a preceding 0 (if it is less than 10) and be a valid day (between 1 and 31). Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
         }else if(date[2].length!=2){
           ui.alert('Error!', 'The year must be the last two values of the year only. Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
+        }else if(parseInt(date[2])!=parseInt(curYear.substring(2))){
+          input2=ui.alert('Year Confirmation', 'The year you entered ('+date[2]+') is not the current year ('+curYear.substring(2)+'). Is is the year you meant to enter?', ui.ButtonSet.YES_NO_CANCEL);
+          if(input2==ui.Button.YES){check=true;ss.toast('Check', 'true', 3);return;}else if(input2==ui.Button.CANCEL){ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return;}
         }else{check=true;}
       }
     }else{ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return;}
