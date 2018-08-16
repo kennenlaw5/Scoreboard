@@ -9,7 +9,7 @@ function menuItem1() {
   SpreadsheetApp.getUi().alert('Call or text (720) 317-5427');
 }
 function menuItem2() {
-  //Created By Kennen Larence
+  //Created By Kennen Lawrence
   var ui = SpreadsheetApp.getUi();
   var input = ui.prompt('Email Sheet Creator','Describe the issue you\'re having in the box below, then press "Ok" to submit your issue via email:',ui.ButtonSet.OK_CANCEL);
   if (input.getSelectedButton() == ui.Button.OK) {
