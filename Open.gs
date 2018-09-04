@@ -49,3 +49,47 @@ function getName(){
   Logger.log(name);
   return name;
 }
+
+function newMonth() {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var current, spliced, date, next, nextSplice;
+  var check = false;
+  while (!check) {
+    check = true;
+    date = ui.prompt('Enter Previous Month', 'Please type in the previous month in the box below:', ui.ButtonSet.OK_CANCEL);
+    if (date.getSelectedButton() == ui.Button.CANCEL) { ss.toast('No sheets hidden. New Month function cancelled.', 'Cancelled'); return; }
+    date = date.getResponseText();
+    if (!isNaN(parseInt(date, 10))) {
+      if (parseInt(date, 10) > 12 || parseInt(date, 10) < 1) {
+        ui.alert('Error!', 'The month must be a valid month (between 1 and 12).',ui.ButtonSet.OK);
+        check = false;
+      }
+    } else {
+      check = false;
+      ui.alert('ERROR', 'Please enter a valid number. "'+ date +'" Can\'t be parsed to an integer.', ui.ButtonSet.OK);
+    }
+  }
+  Logger.log(date);
+  Logger.log(parseInt(date, 10))
+  for (var i = 0; i < sheets.length && check; i++) {
+    if (i+1 < sheets.length) {
+      current = sheets[i].getSheetName();
+      spliced = current.split("/");
+      next = sheets[i+1].getSheetName();
+      nextSplice = next.split("/");
+      if (!ss.getSheetByName(current).isSheetHidden()) {
+        if (!isNaN(parseInt(spliced[0], 10)) && parseInt(spliced[0], 10) == parseInt(date, 10)) {
+          if (!isNaN(parseInt(nextSplice[0], 10)) && parseInt(nextSplice[0], 10) == parseInt(date, 10)) {
+            ss.getSheetByName(current).hideSheet();
+          } else {
+            check = true;
+            Logger.log("LAST OF MONTH: " + current);
+          }
+        }
+        else { Logger.log(current + " failed Validation"); }
+      }
+    }
+  }
+}
