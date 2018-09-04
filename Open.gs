@@ -1,6 +1,7 @@
 function onOpen(){
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('Utilities').addSubMenu(ui.createMenu('Help').addItem('By Phone','menuItem1').addItem('By Email','menuItem2')).addItem('Generate Sheet','duplicate').addToUi();
+  ui.createMenu('Utilities').addSubMenu(ui.createMenu('Help').addItem('By Phone','menuItem1').addItem('By Email','menuItem2')).addItem('Generate Sheet','duplicate')
+  .addItem('New Month', 'newMonth').addToUi();
   var message = 'The spreadsheet has loaded successfully! Have a great day!';
   var title = 'Complete!';
   SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
