@@ -6,7 +6,7 @@ function duplicate() {
   var template=ss.getSheetByName('Master');
   var primary=ss.getSheetByName("LoadingChart");
   var target;var rows=[];var j=0;var final=[];
-  var numRows=primary.getLastRow()-2;var teamRows=[12,18,25,33,41];
+  var numRows=primary.getLastRow()-2;var teamRows=[12,19,26,34,42];
   var range=primary.getRange(3,2,numRows,10).getValues();
   var rangefill=[];var check=false;var date;
   var curYear=primary.getRange(1,1).getDisplayValue();
