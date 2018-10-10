@@ -14,7 +14,7 @@ function menuItem2() {
   var ui = SpreadsheetApp.getUi();
   var input = ui.prompt('Email Sheet Creator','Describe the issue you\'re having in the box below, then press "Ok" to submit your issue via email:',ui.ButtonSet.OK_CANCEL);
   if (input.getSelectedButton() == ui.Button.OK) {
-    MailApp.sendEmail('kennen.lawrence@schomp.com','HELP Sales Daily_March',input.getResponseText(),{name:getName()});
+    MailApp.sendEmail('kennen.lawrence@a2zsync.com','HELP BMW Scoreboard',input.getResponseText(),{name:getName()});
   } else if (input.getSelectedButton() == ui.Button.CANCEL) {
     Logger.log('User cancelled');
   }
@@ -95,3 +95,35 @@ function newMonth() {
     }
   }
 }
+
+/*function addCA() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var sheet = ss.getSheetByName("Master");
+  var teamRows = driver("teamRows");
+  var teams = driver("teams");
+  var finalTeamSize = driver("finalTeamSize");
+  var firstCARow = driver("firstCARow");
+  var check = false;
+  var caName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor in the box below.', ui.ButtonSet.OK_CANCEL);
+  if (caName.getSelectedButton() == ui.Button.CANCEL) { return; }
+  while (!check) {
+    var team = ui.prompt('CA Name', 'Please type the name of the new Client Advisor in the box below.', ui.ButtonSet.OK_CANCEL);
+    if (team.getSelectedButton() == ui.Button.CANCEL) { return; }
+  }
+  caName = caName.getResponseText();
+  team = team.getResponseText();
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+

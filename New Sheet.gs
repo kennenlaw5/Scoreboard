@@ -1,9 +1,9 @@
 function duplicate() {
   //Created By Kennen Lawrence
   //Version 2.0
-  var teamRows = [11,18,26,34,42];
-  var finalTeamSize = 4;
-  var firstCARow = 6;
+  var teamRows = driver("teamRows");
+  var finalTeamSize = driver("finalTeamSize");
+  var firstCARow = driver("firstCARow");
   var types = 2; //Number of types. Currently just New and Used which = 2
   var ss=SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
