@@ -1,38 +1,67 @@
 function duplicate() {
   //Created By Kennen Lawrence
-  //Version 1.3
+  //Version 2.0
+  var teamRows = [11,18,26,34,42];
+  var finalTeamSize = 4;
+  var firstCARow = 6;
+  var types = 2; //Number of types. Currently just New and Used which = 2
   var ss=SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
   var template=ss.getSheetByName('Master');
   var primary=ss.getSheetByName("LoadingChart");
-  var target;var rows=[];var j=0;var final=[];
-  var numRows=primary.getLastRow()-2;var teamRows=[11,18,26,34,42];
-  var range=primary.getRange(3,2,numRows,10).getValues();
-  var rangefill=[];var check=false;var date;
+  var sheets = ss.getSheets();
+  var target, date, startRow;
+  var rows = [];
+  var rows2 = [];
+  var j=0;
+  var m=0;
+  var final=[];
+  var numRows = (primary.getLastRow()-4)/2;
+  var range = primary.getRange(3,2,numRows,10).getValues();
+  var range2 = primary.getRange(numRows+5,2,numRows,10).getValues();
+  var rangeFill=[];
+  var rangeFill2=[];
+  var check=false;
   var curYear=primary.getRange(1,1).getDisplayValue();
   var input;var input2;
-  for(var i=0;i<teamRows.length;i++){
-    rangefill[i]=template.getRange(parseInt(teamRows[i]),6,1,19).getFormulas();
+  var row = teamRows[teamRows.length-1] + finalTeamSize;
+  for (var i = 0; i < teamRows.length; i++) {
+    rangeFill[i] = template.getRange(parseInt(teamRows[i])+row,6,1,19).getFormulas();
   }
-  var row=6;var forms=[];
-  for(var i=0;i<numRows;i++){
+  for (i = 0; i < teamRows.length; i++) {
+    rangeFill2[i] = template.getRange(parseInt(teamRows[i])+row+row,6,1,19).getFormulas();
+  }
+  var forms=[];
+  for (i = 0; i < numRows; i++) {
+    row = teamRows[teamRows.length-1] + finalTeamSize + firstCARow;
     check=false;
-    for(var k=0;k<teamRows.length;k++){
-      if(parseInt(i)==parseInt(teamRows[k])-6){check=true;}
+    for(var k = 0; k < teamRows.length; k++) {
+      if (parseInt(i) == parseInt(teamRows[k])-firstCARow) { check=true; }
     }
-    if(check==false){
-      forms[0]="=IFERROR(G"+row+"/F"+row+',"N/A")';
-      forms[1]="=IFERROR(K"+row+"/J"+row+',"N/A")';
-      forms[2]="=IFERROR(M"+row+"/J"+row+',"N/A")';
-      forms[3]="=IFERROR(Q"+row+"/P"+row+',"N/A")';
-      forms[4]="=IFERROR(S"+row+"/P"+row+',"N/A")';
-      forms[5]="=IFERROR(V"+row+"/J"+row+',"N/A")';
-      rows[i]=[range[i][0],range[i][1],forms[0],"",range[i][2],range[i][4],forms[1],range[i][5],forms[2],"",range[i][6],range[i][8],forms[3],range[i][9],forms[4],"",range[i][3],forms[5],range[i][7]];
-    }else if(check==true){
-      rows[i]=rangefill[j][0];
-      j+=1;
+    for (var l = 0; l < types; l++) {
+      if (l == 1) { row += row-firstCARow; }
+      if (check == false) {
+        forms[0] = "=IFERROR(G" + (row+i) + "/F" + (row+i) + ',"N/A")';
+        forms[1] = "=IFERROR(K" + (row+i) + "/J" + (row+i) + ',"N/A")';
+        forms[2] = "=IFERROR(M" + (row+i) + "/J" + (row+i) + ',"N/A")';
+        forms[3] = "=IFERROR(Q" + (row+i) + "/P" + (row+i) + ',"N/A")';
+        forms[4] = "=IFERROR(S" + (row+i) + "/P" + (row+i) + ',"N/A")';
+        forms[5] = "=IFERROR(V" + (row+i) + "/J" + (row+i) + ',"N/A")';
+        if (l == 0) {
+          rows[i] = [range[i][0], range[i][1], forms[0], "", range[i][2], range[i][4], forms[1],
+                     range[i][5], forms[2], "", range[i][6], range[i][8], forms[3], range[i][9],
+                     forms[4], "", range[i][3], forms[5], range[i][7]];
+        } else if (l == 1) {
+          rows2[i] = [range2[i][0], range2[i][1], forms[0], "", range2[i][2], range2[i][4], forms[1],
+                     range2[i][5], forms[2], "", range2[i][6], range2[i][8], forms[3], range2[i][9],
+                     forms[4], "", range2[i][3], forms[5], range2[i][7]];
+        }
+        
+      }else if(check==true){
+        if (l == 0) { rows[i]=rangeFill[j][0]; j++; }
+        if (l == 1) { rows2[i]=rangeFill2[m][0]; m++; }
+      }
     }
-    row+=1;
   }
   check=false;
   while(!check){
@@ -57,13 +86,26 @@ function duplicate() {
       }
     }else{ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return;}
   }
+  
   template.copyTo(ss).setName(input.getResponseText());
   target=ss.getSheetByName(input.getResponseText());
   ss.setActiveSheet(target);
-  target.getRange(6,6,numRows,19).setValues(rows);
+  startRow = teamRows[teamRows.length-1] + finalTeamSize + firstCARow;
+  Logger.log("New start: "+startRow);
+  target.getRange(startRow,6,numRows,19).setValues(rows);
+  startRow += teamRows[teamRows.length-1] + finalTeamSize;
+  target.getRange(startRow,6,numRows,19).setValues(rows2);
+  for (i = 0; i < sheets.length; i++) {
+    if (sheets[i].getSheetName() == primary.getSheetName()) { j = i + 2; }
+  }
+  ss.moveActiveSheet(j);
+  
   
   //Intentionally error out the Loading Chart to clean it up by deleting names from the reports
-  ss.getSheetByName("Fresh Up").getRange('A:A').setValue('Needs Updated!');
-  ss.getSheetByName("Phone Up").getRange('A:A').setValue('Needs Updated!');
-  ss.getSheetByName("Internet Up").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("New Fresh").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("New Phone").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("New Internet").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("Used Fresh").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("Used Phone").getRange('A:A').setValue('Needs Updated!');
+  ss.getSheetByName("Used Internet").getRange('A:A').setValue('Needs Updated!');
 }
