@@ -6,9 +6,11 @@ function onOpen(){
   var title = 'Complete!';
   SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
 }
+
 function menuItem1() {
   SpreadsheetApp.getUi().alert('Call or text (720) 317-5427');
 }
+
 function menuItem2() {
   //Created By Kennen Lawrence
   var ui = SpreadsheetApp.getUi();
@@ -19,6 +21,7 @@ function menuItem2() {
     Logger.log('User cancelled');
   }
 }
+
 function onEdit(e){
   var ss=SpreadsheetApp.getActiveSpreadsheet();
   var ui=SpreadsheetApp.getUi();
@@ -35,11 +38,12 @@ function onEdit(e){
     e.range.setValue(e.oldValue);
   }
 }
+
 function getName(){
   //Created By Kennen Lawrence
-  //Version 1.0
+  //Version 1.01
   var email = Session.getActiveUser().getEmail();
-  var name;var first;var last;
+  var name, first, last;
   name = email.split("@schomp.com");
   name=name[0];
   name=name.split(".");
@@ -48,7 +52,6 @@ function getName(){
   first= first[0].toUpperCase() + first.substring(1);
   last=last[0].toUpperCase() + last.substring(1);
   name=first+" "+last;
-  Logger.log(name);
   return name;
 }
 
