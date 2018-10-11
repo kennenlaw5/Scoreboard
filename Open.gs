@@ -99,6 +99,15 @@ function newMonth() {
   }
 }
 
+function showSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.getSheetByName("New Fresh").showSheet();
+  ss.getSheetByName("New Phone").showSheet();
+  ss.getSheetByName("New Internet").showSheet();
+  ss.getSheetByName("Used Fresh").showSheet();
+  ss.getSheetByName("Used Phone").showSheet();
+  ss.getSheetByName("Used Internet").showSheet();
+}
 /*function addCA() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
