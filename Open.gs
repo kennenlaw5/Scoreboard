@@ -1,7 +1,7 @@
 function onOpen(){
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('Utilities').addSubMenu(ui.createMenu('Help').addItem('By Phone','menuItem1').addItem('By Email','menuItem2')).addItem('Generate Sheet','duplicate')
-  .addItem('New Month', 'newMonth').addToUi();
+  ui.createMenu('Utilities').addSubMenu(ui.createMenu('Help').addItem('By Phone','menuItem1').addItem('By Email','menuItem2')).addItem('New Day Import', 'showSheets')
+  .addItem('Generate Sheet','duplicate').addItem('New Month', 'newMonth').addToUi();
   var message = 'The spreadsheet has loaded successfully! Have a great day!';
   var title = 'Complete!';
   SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
@@ -61,6 +61,13 @@ function newMonth() {
   var sheets = ss.getSheets();
   var current, spliced, date, next, nextSplice;
   var check = false;
+  var pass = "Apples";
+  var passCheck = ui.prompt('Confirm New Month', 'Please enter confirmation password to setup New Month.', ui.ButtonSet.OK_CANCEL);
+  if (passCheck.getSelectedButton() == ui.Button.CANCEL) { ss.toast('No sheets were hidden.','Cancelled.'); return; }
+  if (passCheck.getResponseText().toLowerCase() != pass.toLowerCase()) {
+    ui.alert('Incorrect', 'You have entered an incorrect password. Script will terminate.', ui.ButtonSet.OK);
+    return;
+  }
   while (!check) {
     check = true;
     date = ui.prompt('Enter Previous Month', 'Please type in the previous month in the box below:', ui.ButtonSet.OK_CANCEL);
@@ -99,7 +106,7 @@ function newMonth() {
   }
 }
 
-function showSheet() {
+function showSheets() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   ss.getSheetByName("New Fresh").showSheet();
   ss.getSheetByName("New Phone").showSheet();
@@ -107,7 +114,19 @@ function showSheet() {
   ss.getSheetByName("Used Fresh").showSheet();
   ss.getSheetByName("Used Phone").showSheet();
   ss.getSheetByName("Used Internet").showSheet();
+  ss.setActiveSheet(ss.getSheetByName("New Fresh"));
 }
+
+function hideSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.getSheetByName("New Fresh").hideSheet();
+  ss.getSheetByName("New Phone").hideSheet();
+  ss.getSheetByName("New Internet").hideSheet();
+  ss.getSheetByName("Used Fresh").hideSheet();
+  ss.getSheetByName("Used Phone").hideSheet();
+  ss.getSheetByName("Used Internet").hideSheet();
+}
+
 /*function addCA() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();

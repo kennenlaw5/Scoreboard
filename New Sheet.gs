@@ -108,11 +108,5 @@ function duplicate() {
   ss.getSheetByName("Used Fresh").getRange('A:A').setValue('Needs Updated!');
   ss.getSheetByName("Used Phone").getRange('A:A').setValue('Needs Updated!');
   ss.getSheetByName("Used Internet").getRange('A:A').setValue('Needs Updated!');
-  
-  ss.getSheetByName("New Fresh").hideSheet();
-  ss.getSheetByName("New Phone").hideSheet();
-  ss.getSheetByName("New Internet").hideSheet();
-  ss.getSheetByName("Used Fresh").hideSheet();
-  ss.getSheetByName("Used Phone").hideSheet();
-  ss.getSheetByName("Used Internet").hideSheet();
+  hideSheets();
 }
