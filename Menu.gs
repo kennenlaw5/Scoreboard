@@ -127,7 +127,7 @@ function hideSheets() {
   ss.getSheetByName("Used Internet").hideSheet();
 }
 
-/*function addCA() {
+function addCA() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
   var sheet = ss.getSheetByName("Master");
@@ -136,15 +136,27 @@ function hideSheets() {
   var finalTeamSize = driver("finalTeamSize");
   var firstCARow = driver("firstCARow");
   var check = false;
-  var caName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor in the box below.', ui.ButtonSet.OK_CANCEL);
+  var teams = driver('teams');
+  var caName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor as it will appear'
+                         + ' on Sales Activity Daily in the box below.', ui.ButtonSet.OK_CANCEL);
   if (caName.getSelectedButton() == ui.Button.CANCEL) { return; }
   while (!check) {
-    var team = ui.prompt('CA Name', 'Please type the name of the new Client Advisor in the box below.', ui.ButtonSet.OK_CANCEL);
+    var team = ui.prompt('CA Name', 'Please type the team of the new Client Advisor in the box below.'
+                         , ui.ButtonSet.OK_CANCEL);
     if (team.getSelectedButton() == ui.Button.CANCEL) { return; }
+    for (var i = 0; i < teams.length; i++) {
+      if (team.getResponseText().toLowerCase() == teams[i].toLowerCase()) { 
+        check = true;
+        team = [driver('firstCARow')].concat(driver('teamRows'));
+        team = team[i];
+      }
+    }
+    if (!check) { ui.alert('Error', 'You have entered an invalid team name. The teams currently are: ' 
+                           + teams.toString().split(',').join(', '), ui.ButtonSet.OK); }
   }
   caName = caName.getResponseText();
-  team = team.getResponseText();
-}*/
+  
+}
 
 
 

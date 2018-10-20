@@ -1,22 +1,22 @@
 function driver(input){
   switch(input){
-    case "teamRows":
+    case 'teamRows':
       var teamRows = [10,17,25,32,40];
       return teamRows;
       break;
-    case "finalTeamSize":
+    case 'finalTeamSize':
       var finalTeamSize = 4;
       return finalTeamSize;
       break;
-    case "firstCARow":
+    case 'firstCARow':
       var firstCARow = 6;
       return firstCARow;
       break;
-    case "teams":
-      var teams = ["jeff","ben","robb","seth","dean"];
+    case 'teams':
+      var teams = ['Jeff','Ben','Robb','Anna','Seth','Dean'];
       return teams;
     default:
-      Logger.log(input+" was invalid.");
+      Logger.log(input + ' was invalid.');
       break;
   }
 }
