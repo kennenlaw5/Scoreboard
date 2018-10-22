@@ -4,7 +4,7 @@ function duplicate() {
   var teamRows = driver("teamRows");
   var finalTeamSize = driver("finalTeamSize");
   var firstCARow = driver("firstCARow");
-  var types = 2; //Number of types. Currently just New and Used which = 2
+  var types = driver('types'); //Number of types. Currently just New and Used which = 2
   var ss=SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
   var template=ss.getSheetByName('Master');

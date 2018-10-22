@@ -1,7 +1,7 @@
 function driver(input){
   switch(input){
     case 'teamRows':
-      var teamRows = [10,17,25,32,40];
+      var teamRows = [9, 16, 24, 31, 39];
       return teamRows;
       break;
     case 'finalTeamSize':
@@ -13,8 +13,18 @@ function driver(input){
       return firstCARow;
       break;
     case 'teams':
-      var teams = ['Jeff','Ben','Robb','Anna','Seth','Dean'];
+      var teams = ['Jeff', 'Ben', 'Robb' ,'Anna', 'Seth', 'Dean'];
       return teams;
+      break;
+    case 'types':
+      var types = 2;
+      return types;
+      break;
+    case 'difference':
+      //Difference in rows between the first team on master and the first team on LoadingChart
+      var diff = 3;
+      return diff;
+      break;
     default:
       Logger.log(input + ' was invalid.');
       break;
