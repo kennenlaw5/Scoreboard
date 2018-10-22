@@ -1,7 +1,6 @@
 function addCA() {
   //Created by Kennen Lawrence
   //Version 1.0
-  //THIS IS UNTESTED! BETA TESTING STILL REQUIRED!
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
   var master = ss.getSheetByName("Master");
