@@ -12,7 +12,7 @@ function addCA() {
   var wasLastTeam = false;
   var teams = driver('teams');
   var firstCARow = driver("firstCARow");
-  var range, forms, values, types, current;
+  var range, forms, values, types, current, replace, first;
   var caName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it will appear'
                          + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
   if (caName.getSelectedButton() == ui.Button.CANCEL) { return; }
@@ -41,8 +41,18 @@ function addCA() {
     range = master.getRange(current, 1, 1, master.getLastColumn());
     forms = range.getFormulas();
     values = range.getValues();
+    if (i == 0) {
+      replace = forms[0][5].replace('=F','').split('+');
+      replace[0] = parseInt(replace[0]);
+      replace[1] = parseInt(replace[1].replace('F',''));
+    }
     for (var j = 0; j < values[0].length; j++) {
       if (forms[0][j] != '' && forms[0][j] != null && forms[0][j] != undefined) {
+        if (i == 0) {
+          for (var k = 0; k < replace.length; k++) {
+            forms[0][j] = forms[0][j].replace(replace[k],(replace[k] + 1 + k));
+          }
+        }
         values[0][j] = forms[0][j];
       }
     }
@@ -52,11 +62,16 @@ function addCA() {
       values[0][0] = '=A' + forms[0][0];
     }
     master.insertRowBefore(current);
-    range.setValues(values);
+    if (i != 0) { range.setValues(values); }
     current++;
-    if (i == 0) { master.getRange(current, 1).setValue(caName); }
+    if (i == 0) {
+      first = values;
+      master.getRange(current, 1).setValue(caName);
+    }
     current += teamRows[teamRows.length-1] + finalTeamSize;
   }
+  master.getRange(team, 1, 1, master.getLastColumn()).setValues(first);
+  
   caName = caDSName.getResponseText();
   types = driver('types');
   current = team - driver('difference');
@@ -140,7 +155,7 @@ function removeCA() {
     }
     if (!check) {
       ui.alert('Error', '"' + caName.getResponseText() + '" was not found in team ' + team.getResponseText()
-      + '. Please type a differnt CA Name.', ui.ButtonSet.OK); 
+      + '. Please type a different CA Name.', ui.ButtonSet.OK); 
     }
   }
   caName = caName.getResponseText();
@@ -173,4 +188,5 @@ function removeCA() {
     ui.alert('Complete', 'Please copy the following value and paste it as the "finalTeamSize" value in the Driver.gs file:\n'
              + (driver('finalTeamSize')-1), ui.ButtonSet.OK);
   }
+  ss.toast('"'+caName+'" was deleted successfully!', 'Complete');
 }

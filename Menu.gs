@@ -23,6 +23,8 @@ function menuItem2() {
 }
 
 function onEdit(e){
+  var devMode = false;
+  if (devMode) { return; }
   var ss=SpreadsheetApp.getActiveSpreadsheet();
   var ui=SpreadsheetApp.getUi();
   var cols=[2,3,6,7,10,11,13,16,17,19,22,24];
