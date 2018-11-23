@@ -147,7 +147,7 @@ function removeCA() {
   check = false;
   teamCAs = master.getRange(teamStart, 1, teamSize).getDisplayValues();
   while (!check) {
-    var caName = ui.prompt('CA Name', 'Please type the name of the Client Advisor you wish to delete, as appear(s/ed)'
+    var caName = ui.prompt('CA Name', 'Please type the name of the Client Advisor you wish to delete,\nas appear(s/ed)'
                            + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
     if (caName.getSelectedButton() == ui.Button.CANCEL) { return; }
     for (i = 0; i < teamCAs.length; i++) {

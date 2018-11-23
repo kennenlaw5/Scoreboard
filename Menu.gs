@@ -36,7 +36,7 @@ function onEdit(e){
     if(e.source.getSheetName()==sheets[i]){return;}
   }
   if(ignoreRows.indexOf(e.range.getRow()) == -1 && cols.indexOf(e.range.getColumn()) != -1 && ignoreSheets.indexOf(activeSheet) == -1 && isNaN(parseInt(e.value))){
-    ui.alert("Error", 'This value is not allowed. For adding text, please right click the cell and select "Insert Note".', ui.ButtonSet.OK);
+    ui.alert('Error', 'This value is not allowed. For adding text, please right click the cell and select "Insert Note".', ui.ButtonSet.OK);
     e.range.setValue(e.oldValue);
   }
 }
