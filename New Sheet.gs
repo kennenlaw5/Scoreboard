@@ -80,7 +80,7 @@ function duplicate() {
         }else if(date[2].length!=2){
           ui.alert('Error!', 'The year must be the last two values of the year only. Please follow the format "MM/DD/YY"',ui.ButtonSet.OK);
         }else if(parseInt(date[2])!=parseInt(curYear.substring(2))){
-          input2=ui.alert('Year Confirmation', 'The year you entered ('+date[2]+') is not the current year ('+curYear.substring(2)+'). Is is the year you meant to enter?', ui.ButtonSet.YES_NO_CANCEL);
+          input2=ui.alert('Year Confirmation', 'The year you entered ('+date[2]+') is not the current year ('+curYear.substring(2)+'). Is this the year you meant to enter?', ui.ButtonSet.YES_NO_CANCEL);
           if(input2==ui.Button.YES){check=true;ss.toast('Check', 'true', 3);return;}else if(input2==ui.Button.CANCEL){ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return;}
         }else{check=true;}
       }

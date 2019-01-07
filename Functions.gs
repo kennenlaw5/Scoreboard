@@ -106,11 +106,11 @@ function addCA() {
       }
     }
     teamRows = teamRows.toString().split(',').join(', ');
-    ui.alert('Complete', 'Please copy the following values and paste them in the "teamRows" array in the Driver.gs file:\n'
-             + teamRows, ui.ButtonSet.OK);
+    check = false;
+    while (!check) { check = driverUpdateCheck(teamRows, 'teamRows'); }
   } else {
-    ui.alert('Complete', 'Please copy the following value and paste it as the "finalTeamSize" value in the Driver.gs file:\n'
-             + (driver('finalTeamSize')+1), ui.ButtonSet.OK);
+    check = false;
+    while (!check) { check = driverUpdateCheck(driver('finalTeamSize')+1, 'finalTeamSize'); }
   }
 }
 
@@ -182,11 +182,27 @@ function removeCA() {
       }
     }
     teamRows = teamRows.toString().split(',').join(', ');
-    ui.alert('Complete', 'Please copy the following values and paste them in the "teamRows" array in the Driver.gs file:\n'
-             + teamRows, ui.ButtonSet.OK);
+    check = false;
+    while (!check) { check = driverUpdateCheck(teamRows, 'teamRows'); }
   } else {
-    ui.alert('Complete', 'Please copy the following value and paste it as the "finalTeamSize" value in the Driver.gs file:\n'
-             + (driver('finalTeamSize')-1), ui.ButtonSet.OK);
+    check = false;
+    while (!check) { check = driverUpdateCheck(driver('finalTeamSize')-1, 'finalTeamSize'); }
   }
   ss.toast('"'+caName+'" was deleted successfully!', 'Complete');
+}
+
+function driverUpdateCheck(driverVal, type) {
+  var ui = SpreadsheetApp.getUi();
+  var selection;
+  var check = driver(type).toString() == driverVal.toString();
+  if (check) { return check; }
+  else if (type == 'teamRows') {
+    selection = ui.alert('Complete', 'Please copy the following values and paste them in the "teamRows" array in the Driver.gs file, then press "Ok":\n'
+             + driverVal, ui.ButtonSet.OK);
+  } else {
+    selection = ui.alert('Complete', 'Please copy the following value and paste it as the "finalTeamSize" value in the Driver.gs file, then press "Ok":\n'
+             + (driverVal), ui.ButtonSet.OK);
+  }
+  if (selection == ui.Button.CLOSE) { return true; }
+  return check;
 }
