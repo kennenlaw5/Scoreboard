@@ -1,7 +1,7 @@
 function driver(input){
   switch(input){
     case 'teamRows':
-      var teamRows = [10, 15, 20, 25, 34];
+      var teamRows = [10, 16, 22, 28, 37];
       return teamRows;
       break;
     case 'finalTeamSize':
