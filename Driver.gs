@@ -1,19 +1,19 @@
-function driver(input){
-  switch(input){
+function driver(input) {
+  switch(input) {
     case 'teamRows':
-      var teamRows = [10, 16, 22, 28, 37];
-      return teamRows;
+      var rows = get(input).split(',');
+      for (var i in rows) { rows[i] = parseInt(rows[i]); }
+      return rows;
       break;
     case 'finalTeamSize':
-      var finalTeamSize = 4;
-      return finalTeamSize;
+      return parseInt(get(input));
       break;
     case 'firstCARow':
       var firstCARow = 6;
       return firstCARow;
       break;
     case 'teams':
-      var teams = ['Jeff', 'Ben', 'Robb' ,'Dean', 'Seth', 'Portfolio'];
+      var teams = ['Merrie', 'Ben', 'Robb' ,'Josh', 'Liz', 'Portfolio'];
       return teams;
       break;
     case 'types':
@@ -29,4 +29,19 @@ function driver(input){
       Logger.log(input + ' was invalid.');
       break;
   }
+}
+
+function get (property) {
+  return PropertiesService.getScriptProperties().getProperty(property);
+}
+
+function set (property, value) {
+  if (typeof property != 'string') { throw 'set(property) can only be of type "string"'; }
+  if (typeof value != 'string' && typeof value != 'number') { throw 'set(value) can only be of type "string" or "number"'; }
+  PropertiesService.getScriptProperties().setProperty(property, value);
+}
+
+function test() {
+//  set('finalTeamSize', 3);
+  set('teamRows','13,20,27,31,39');
 }
