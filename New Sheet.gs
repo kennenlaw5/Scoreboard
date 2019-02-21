@@ -27,11 +27,11 @@ function duplicate() {
   var row = teamRows[teamRows.length - 1] + finalTeamSize;
   
   for (var i = 0; i < teamRows.length; i++) {
-    rangeFill[i] = template.getRange(parseInt(teamRows[i]) + row, 6, 1, 19).getFormulas();
+    rangeFill[i] = template.getRange(parseInt(teamRows[i]) + row, 6, 1, driver('numCols')).getFormulas();
   }
   
   for (i = 0; i < teamRows.length; i++) {
-    rangeFill2[i] = template.getRange(parseInt(teamRows[i]) + row + row, 6, 1, 19).getFormulas();
+    rangeFill2[i] = template.getRange(parseInt(teamRows[i]) + row + row, 6, 1, driver('numCols')).getFormulas();
   }
   
   var forms = [];
@@ -98,9 +98,14 @@ function duplicate() {
           else if (input2 == ui.Button.CANCEL) { ss.toast('New scoreboard sheet was not generated.', 'Cancelled'); return; }
         } else { check = true; }
       }
-    } else{ ss.toast('New scoreboard sheet was not generated.', 'Cancelled');return; }
+    } else{ ss.toast('New scoreboard sheet was not generated.', 'Cancelled'); return; }
   }
   
+  if (ss.getSheetByName(input.getResponseText()) != null) {
+    if (ui.alert('Override?', 'The sheet with the name, "' + input.getResponseText() + ' already exists. Would you like to override it?', 
+        ui.ButtonSet.YES_NO) != ui.Button.YES) { return; }
+    ss.deleteSheet(ss.getSheetByName(input.getResponseText()));
+  }
   template.copyTo(ss).setName(input.getResponseText());
   target = ss.getSheetByName(input.getResponseText());
   ss.setActiveSheet(target);
@@ -108,7 +113,7 @@ function duplicate() {
   Logger.log('New start: ' + startRow);
   target.getRange(startRow, 6, numRows, rows[0].length).setValues(rows);
   startRow += teamRows[teamRows.length - 1] + finalTeamSize;
-  target.getRange(startRow, 6, numRows, rows[2].length).setValues(rows2);
+  target.getRange(startRow, 6, numRows, rows2[0].length).setValues(rows2);
   for (i = 0; i < sheets.length; i++) {
     if (sheets[i].getSheetName() == primary.getSheetName()) { j = i + 2; }
   }

@@ -20,6 +20,10 @@ function driver(input) {
       var types = 2;
       return types;
       break;
+    case 'numCols':
+      var cols = 21;
+      return cols;
+      break;
     case 'difference':
       //Difference in rows between the first team on master and the first team on LoadingChart
       var diff = 3;
@@ -43,5 +47,5 @@ function set (property, value) {
 
 function test() {
 //  set('finalTeamSize', 3);
-  set('teamRows','13,20,27,31,39');
+//  set('teamRows','13,20,27,31,39');
 }
