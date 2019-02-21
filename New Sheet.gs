@@ -106,9 +106,9 @@ function duplicate() {
   ss.setActiveSheet(target);
   startRow = teamRows[teamRows.length - 1] + finalTeamSize + firstCARow;
   Logger.log('New start: ' + startRow);
-  target.getRange(startRow, 6, numRows, 19).setValues(rows);
+  target.getRange(startRow, 6, numRows, rows[0].length).setValues(rows);
   startRow += teamRows[teamRows.length - 1] + finalTeamSize;
-  target.getRange(startRow, 6, numRows, 19).setValues(rows2);
+  target.getRange(startRow, 6, numRows, rows[2].length).setValues(rows2);
   for (i = 0; i < sheets.length; i++) {
     if (sheets[i].getSheetName() == primary.getSheetName()) { j = i + 2; }
   }
