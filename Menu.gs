@@ -94,15 +94,19 @@ function newMonth() {
       next = sheets[i+1].getSheetName();
       nextSplice = next.split("/");
       if (!ss.getSheetByName(current).isSheetHidden()) {
+        
         if (!isNaN(parseInt(spliced[0], 10)) && parseInt(spliced[0], 10) == parseInt(date, 10)) {
-          if (!isNaN(parseInt(nextSplice[0], 10)) && parseInt(nextSplice[0], 10) == parseInt(date, 10)) {
-            ss.getSheetByName(current).hideSheet();
-          } else {
+          
+          if (!isNaN(parseInt(nextSplice[0], 10)) && parseInt(nextSplice[0], 10) != parseInt(date, 10)) {
             check = true;
             Logger.log("LAST OF MONTH: " + current);
           }
+          
+          ss.getSheetByName(current).hideSheet();
         }
+        
         else { Logger.log(current + " failed Validation"); }
+        
       }
     }
   }
