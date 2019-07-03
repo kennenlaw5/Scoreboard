@@ -132,3 +132,36 @@ function hideSheets() {
   ss.getSheetByName("Used Phone").hideSheet();
   ss.getSheetByName("Used Internet").hideSheet();
 }
+
+function newYear () {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  
+  var run = ui.alert('Are you sure?', 'Do you actually know what this function does?', ui.ButtonSet.YES_NO_CANCEL);
+  
+  if (run !== ui.Button.YES) { return; }
+  
+  var sheets = ss.getSheets();
+  var check  = false;
+  var name, year;
+  
+  while (!check) {
+    year   = ui.prompt('Year to be deleted:', 'Enter the last 2 of the year to be deleted.\n(19 would be entered for 2019)', ui.ButtonSet.OK_CANCEL);
+    
+    if (year.getSelectedButton() !== ui.Button.OK) { ss.toast('Action Cancelled', 'No changes were made.', 5); return; }
+    
+    if (!isNaN(parseInt(year.getResponseText(), 10))) { check = true; }
+    else { ui.alert('Invalid Entry', '"' + year.getResponseText() + '" could not be parsed to an integer and is not a valid number.\nPlease ensure there are no spaces or non-numeric characters and try again.', ui.ButtonSet.OK); }
+  }
+  
+  year = parseInt(year.getResponseText(), 10);
+  
+  for (var i in sheets) {
+    name = sheets[i].getSheetName();
+    if (name.indexOf('/') !== -1) {
+      name = parseInt(name.split('/')[2], 10);
+      if (!isNaN(name) && name === year) { ss.deleteSheet(sheets[i]); }
+    }
+  }
+ 
+}
