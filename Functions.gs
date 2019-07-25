@@ -17,21 +17,21 @@ function addCA(team, caName, caDSName, wasLastTeam) {
     wasLastTeam = false;
     caName      = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it will appear'
                        + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
-    if (caName.getSelectedButton() == ui.Button.CANCEL) return;
+    if (caName.getSelectedButton() === ui.Button.CANCEL) return;
     
     caDSName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it appears'
                          + ' in Dealersocket, in the box below.', ui.ButtonSet.OK_CANCEL);
     
-    if (caDSName.getSelectedButton() == ui.Button.CANCEL) return;
+    if (caDSName.getSelectedButton() === ui.Button.CANCEL) return;
     
     while (!check) {
       team = ui.prompt('CA Team', 'Please type the team of the new Client Advisor in the box below.'
                        , ui.ButtonSet.OK_CANCEL);
       
-      if (team.getSelectedButton() == ui.Button.CANCEL) return;
+      if (team.getSelectedButton() === ui.Button.CANCEL) return;
       
       for (var i = 0; i < teams.length && !check; i++) {
-        if (team.getResponseText().toLowerCase() == teams[i].toLowerCase()) {
+        if (team.getResponseText().toLowerCase() === teams[i].toLowerCase()) {
           check = true;
           team  = [driver('firstCARow')].concat(driver('teamRows'));
           

@@ -13,7 +13,7 @@ function driver(input) {
       return firstCARow;
       break;
     case 'teams':
-      var teams = ['Merrie', 'Ben', 'Robb' ,'Josh', 'Liz', 'Portfolio'];
+      var teams = ['Merrie', 'Ben', 'Liz' ,'Josh', 'Ace', 'Portfolio'];
       return teams;
       break;
     case 'types':
