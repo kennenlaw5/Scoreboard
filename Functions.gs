@@ -346,7 +346,7 @@ function moveCA() {
       }
     }
     
-    if (!check) { 
+    if (!check) {
       ui.alert('Error', 'You have entered an invalid team name. The teams currently are: ' +
                teams.toString().split(',').join(', '), ui.ButtonSet.OK);
       end_team = ui.prompt('New Team', 'Please type the team where the Client Advisor should be moved in the box below.'

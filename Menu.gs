@@ -64,19 +64,30 @@ function newMonth() {
   var check = false;
   var pass = "Apples";
   var passCheck = ui.prompt('Confirm New Month', 'Please enter confirmation password to setup New Month.', ui.ButtonSet.OK_CANCEL);
-  if (passCheck.getSelectedButton() == ui.Button.CANCEL) { ss.toast('No sheets were hidden.','Cancelled.'); return; }
-  if (passCheck.getResponseText().toLowerCase() != pass.toLowerCase()) {
+  
+  if (passCheck.getSelectedButton() === ui.Button.CANCEL) {
+    ss.toast('No sheets were hidden.','Cancelled.');
+    return; 
+  }
+  
+  if (passCheck.getResponseText().toLowerCase() !== pass.toLowerCase()) {
     ui.alert('Incorrect', 'You have entered an incorrect password. Script will terminate.', ui.ButtonSet.OK);
     return;
   }
+  
   while (!check) {
     check = true;
     date = ui.prompt('Enter Previous Month', 'Please type in the previous month in the box below:', ui.ButtonSet.OK_CANCEL);
-    if (date.getSelectedButton() == ui.Button.CANCEL) { ss.toast('No sheets hidden. New Month function cancelled.', 'Cancelled'); return; }
+    if (date.getSelectedButton() === ui.Button.CANCEL) {
+      ss.toast('No sheets hidden. New Month function cancelled.', 'Cancelled');
+      return;
+    }
+    
     date = date.getResponseText();
+    
     if (!isNaN(parseInt(date, 10))) {
       if (parseInt(date, 10) > 12 || parseInt(date, 10) < 1) {
-        ui.alert('Error!', 'The month must be a valid month (between 1 and 12).',ui.ButtonSet.OK);
+        ui.alert('Error!', 'The month must be a valid month (between 1 and 12).', ui.ButtonSet.OK);
         check = false;
       }
     } else {
@@ -84,28 +95,22 @@ function newMonth() {
       ui.alert('ERROR', 'Please enter a valid number. "'+ date +'" Can\'t be parsed to an integer.', ui.ButtonSet.OK);
     }
   }
-  Logger.log(date);
-  Logger.log(parseInt(date, 10))
+  
   for (var i = 0; i < sheets.length && check; i++) {
-    if (i+1 < sheets.length) {
-      current = sheets[i].getSheetName();
-      spliced = current.split("/");
-      next = sheets[i+1].getSheetName();
-      nextSplice = next.split("/");
+    if (i + 1 < sheets.length) {
+      current    = sheets[i].getSheetName();
+      spliced    = current.split('/');
+      next       = sheets[i + 1].getSheetName();
+      nextSplice = next.split('/');
+      
       if (!ss.getSheetByName(current).isSheetHidden()) {
-        
-        if (!isNaN(parseInt(spliced[0], 10)) && parseInt(spliced[0], 10) == parseInt(date, 10)) {
-          
-          if (!isNaN(parseInt(nextSplice[0], 10)) && parseInt(nextSplice[0], 10) != parseInt(date, 10)) {
+        if (!isNaN(parseInt(spliced[0], 10)) && parseInt(spliced[0], 10) === parseInt(date, 10)) {
+          if (!isNaN(parseInt(nextSplice[0], 10)) && parseInt(nextSplice[0], 10) !== parseInt(date, 10)) {
             check = true;
-            Logger.log("LAST OF MONTH: " + current);
           }
           
           ss.getSheetByName(current).hideSheet();
         }
-        
-        else { Logger.log(current + " failed Validation"); }
-        
       }
     }
   }
