@@ -1,37 +1,32 @@
 function driver(input) {
   switch(input) {
+      
     case 'teamRows':
       var rows = get(input).split(',');
-      for (var i in rows) { rows[i] = parseInt(rows[i]); }
+      for (var i in rows) rows[i] = parseInt(rows[i]);
       return rows;
-      break;
+      
     case 'finalTeamSize':
       return parseInt(get(input));
-      break;
+      
     case 'firstCARow':
-      var firstCARow = 6;
-      return firstCARow;
-      break;
+      return 6;
+      
     case 'teams':
-      var teams = ['Merrie', 'Ben', 'Liz' ,'Josh', 'Ace', 'Portfolio'];
-      return teams;
-      break;
+      return ['BW', 'Ben', 'Matt' ,'Josh', 'Ace'];
+      
     case 'types':
-      var types = 2;
-      return types;
-      break;
+      return 2;
+      
     case 'numCols':
-      var cols = 21;
-      return cols;
-      break;
+      return 21;
+      
     case 'difference':
       //Difference in rows between the first team on master and the first team on LoadingChart
-      var diff = 3;
-      return diff;
-      break;
+      return 3;
+      
     default:
-      Logger.log(input + ' was invalid.');
-      break;
+      throw input + ' is an invalid option for driver().';
   }
 }
 
@@ -40,12 +35,14 @@ function get (property) {
 }
 
 function set (property, value) {
-  if (typeof property != 'string') { throw 'set(property) can only be of type "string"'; }
-  if (typeof value != 'string' && typeof value != 'number') { throw 'set(value) can only be of type "string" or "number"'; }
+  if (typeof property !== 'string') throw 'set(property) can only be of type "string"';
+  
+  if (typeof value !== 'string' && typeof value !== 'number') throw 'set(value) can only be of type "string" or "number"';
+  
   PropertiesService.getScriptProperties().setProperty(property, value);
 }
 
 function test() {
-//  set('finalTeamSize', 3);
-//  set('teamRows','13,20,27,31,39');
+//  set('finalTeamSize', 5);
+//  set('teamRows','12,19,27,34');
 }
