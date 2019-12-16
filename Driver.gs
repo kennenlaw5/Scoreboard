@@ -13,7 +13,7 @@ function driver(input) {
       return 6;
       
     case 'teams':
-      return ['BW', 'Ben', 'Matt' ,'Josh', 'Ace'];
+      return ['Jeff', 'Ben', 'BW', 'Ace', 'Matt'];
       
     case 'types':
       return 2;
@@ -43,6 +43,6 @@ function set (property, value) {
 }
 
 function test() {
-//  set('finalTeamSize', 5);
-//  set('teamRows','12,19,27,34');
+  set('finalTeamSize', 7);
+  set('teamRows','12,19,26,32');
 }

@@ -1,4 +1,4 @@
-function addCA(team, caName, caDSName, wasLastTeam) {
+function addCA(team, caName, caDSName) {
   //Created by Kennen Lawrence
   //Version 1.0
   var ss            = SpreadsheetApp.getActiveSpreadsheet();
@@ -11,51 +11,59 @@ function addCA(team, caName, caDSName, wasLastTeam) {
   var check         = false;
   var teams         = driver('teams');
   var firstCARow    = driver('firstCARow');
+  var wasLastTeam   = false;
   var range, forms, values, types, current, replace, first;
   
-  if (caName == undefined) {
-    wasLastTeam = false;
-    caName      = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it will appear'
-                       + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
-    if (caName.getSelectedButton() === ui.Button.CANCEL) return;
+  if (!team) {
+    team = ui.prompt('CA Team', 'Please type the team of the new Client Advisor in the box below.'
+                     , ui.ButtonSet.OK_CANCEL);
     
-    caDSName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it appears'
-                         + ' in Dealersocket, in the box below.', ui.ButtonSet.OK_CANCEL);
+    if (team.getSelectedButton() === ui.Button.CANCEL) return;
+  }
+  
+  while (!check) {
+    for (var i = 0; i < teams.length && !check; i++) {
+      if (team.getResponseText().toLowerCase() === teams[i].toLowerCase()) {
+        check = true;
+        team  = [driver('firstCARow')].concat(driver('teamRows'));
+        
+        if (i + 1 < teams.length) {
+          team = team[i+1] - 1;
+        } else { 
+          team = team[i] + finalTeamSize - 1;
+          wasLastTeam = true;
+        }
+      }
+    }
     
-    if (caDSName.getSelectedButton() === ui.Button.CANCEL) return;
-    
-    while (!check) {
+    if (!check) {
+      ui.alert('Error', 'You have entered an invalid team name. The teams currently are: ' 
+               + teams.toString().split(',').join(', '), ui.ButtonSet.OK);
       team = ui.prompt('CA Team', 'Please type the team of the new Client Advisor in the box below.'
                        , ui.ButtonSet.OK_CANCEL);
       
       if (team.getSelectedButton() === ui.Button.CANCEL) return;
-      
-      for (var i = 0; i < teams.length && !check; i++) {
-        if (team.getResponseText().toLowerCase() === teams[i].toLowerCase()) {
-          check = true;
-          team  = [driver('firstCARow')].concat(driver('teamRows'));
-          
-          if (i + 1 < teams.length) {
-            team = team[i+1] - 1;
-          } else { 
-            team = team[i] + finalTeamSize - 1;
-            wasLastTeam = true;
-          }
-        }
-      }
-      
-      if (!check) {
-        ui.alert('Error', 'You have entered an invalid team name. The teams currently are: ' 
-                             + teams.toString().split(',').join(', '), ui.ButtonSet.OK);
-      }
     }
-    
-    caName   = caName.getResponseText();
-    caDSName = caDSName.getResponseText();
   }
   
-  types   = driver('types') + 1; //Plus one to include "Totals"
-  current = team;
+  if (!caName) {
+    caName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it will appear'
+                       + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
+    
+    if (caName.getSelectedButton() === ui.Button.CANCEL) return;
+  }
+  
+  if (!caDSName) {
+    caDSName = ui.prompt('CA Name', 'Please type the name of the new Client Advisor, as it appears'
+                         + ' in Dealersocket, in the box below.', ui.ButtonSet.OK_CANCEL);
+    
+    if (caDSName.getSelectedButton() === ui.Button.CANCEL) return;
+  }
+  
+  caName   = caName.getResponseText();
+  caDSName = caDSName.getResponseText();
+  types    = driver('types') + 1; // Plus one to include "Totals"
+  current  = team;
   
   for (i = 0; i < types; i++) {
     range  = master.getRange(current, 1, 1, master.getLastColumn());
@@ -144,14 +152,15 @@ function addCA(team, caName, caDSName, wasLastTeam) {
     }
     
     teamRows = teamRows.toString();
-    driverUpdateCheck(teamRows, 'teamRows');
+    set('teamRows', teamRows);
   } else {
-    driverUpdateCheck(driver('finalTeamSize') + 1, 'finalTeamSize');
+    set('finalTeamSize', driver('finalTeamSize') + 1);
   }
-  ss.toast('"'+caName+'" was added successfully!', 'Complete');
+  
+  ss.toast('"' + caName + '" was added successfully!', 'Complete');
 }
 
-function removeCA(team, caName, teamSize, teamStart, wasLastTeam) {
+function removeCA(team, caName) {
   //Created by Kennen Lawrence
   //Version 1.0
   var ss            = SpreadsheetApp.getActiveSpreadsheet();
@@ -164,65 +173,74 @@ function removeCA(team, caName, teamSize, teamStart, wasLastTeam) {
   var check         = false;
   var teams         = driver('teams');
   var firstCARow    = driver('firstCARow');
-  var types, current, teamCAs;
+  var wasLastTeam   = false;
+  var types, current, teamCAs, teamSize, teamStart;
   
-  if (caName === undefined) {
-    wasLastTeam = false;
+  if (!team) {
+    team = ui.prompt('CA Team', 'Please type the team of the Client Advisor you wish to delete in the box below.'
+                     , ui.ButtonSet.OK_CANCEL);
     
-    while (!check) {
+    if (team.getSelectedButton() === ui.Button.CANCEL) return;
+  }
+  
+  while (!check) {
+    for (var i = 0; i < teams.length && !check; i++) {
+      if (team.getResponseText().toLowerCase() === teams[i].toLowerCase()) {
+        check     = true;
+        teamStart = [firstCARow - 1].concat(teamRows);
+        
+        if (i + 1 < teams.length) {
+          teamSize  = teamStart[i + 1] - 1 - teamStart[i];
+          teamStart = teamStart[i] + 1;
+        } else {
+          teamSize    = finalTeamSize;
+          teamStart   = teamStart[i] + 1;
+          wasLastTeam = true;
+        }
+      }
+    }
+    
+    if (!check) {
+      ui.alert('Error', 'You have entered an invalid team name. The teams currently are: '
+               + teams.toString().split(',').join(', '), ui.ButtonSet.OK);
       team = ui.prompt('CA Team', 'Please type the team of the Client Advisor you wish to delete in the box below.'
                        , ui.ButtonSet.OK_CANCEL);
       
-      if (team.getSelectedButton() == ui.Button.CANCEL) return;
-      
-      for (var i = 0; i < teams.length && !check; i++) {
-        if (team.getResponseText().toLowerCase() === teams[i].toLowerCase()) {
-          check     = true;
-          teamStart = [firstCARow - 1].concat(teamRows);
-          
-          if (i+1 < teams.length) {
-            teamSize  = teamStart[i + 1] - 1 - teamStart[i];
-            teamStart = teamStart[i] + 1;
-          } else {
-            teamSize    = finalTeamSize;
-            teamStart   = teamStart[i] + 1;
-            wasLastTeam = true;
-          }
-        }
-      }
-      
-      if (!check) {
-        ui.alert('Error', 'You have entered an invalid team name. The teams currently are: '
-                             + teams.toString().split(',').join(', '), ui.ButtonSet.OK);
+      if (team.getSelectedButton() === ui.Button.CANCEL) return;
+    }
+  }
+  
+  check   = false;
+  teamCAs = master.getRange(teamStart, 1, teamSize).getDisplayValues();
+  
+  if (!caName) {
+    caName = ui.prompt('CA Name', 'Please type the name of the Client Advisor you wish to delete,\nas appear(s/ed)'
+                       + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
+    
+    if (caName.getSelectedButton() === ui.Button.CANCEL) return;
+  }
+  
+  while (!check) {
+    for (i = 0; i < teamCAs.length; i++) {
+      if (caName.getResponseText().toLowerCase() === teamCAs[i][0].toLowerCase()) {
+        check = true;
+        team  = teamStart + i;
       }
     }
     
-    check   = false;
-    teamCAs = master.getRange(teamStart, 1, teamSize).getDisplayValues();
-    
-    while (!check) {
+    if (!check) {
+      ui.alert('Error', '"' + caName.getResponseText() + '" was not found in team ' + team.getResponseText()
+      + '. Please type a different CA Name.', ui.ButtonSet.OK);
+      
       caName = ui.prompt('CA Name', 'Please type the name of the Client Advisor you wish to delete,\nas appear(s/ed)'
                          + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
       
-      if (caName.getSelectedButton() == ui.Button.CANCEL) return;
-      
-      for (i = 0; i < teamCAs.length; i++) {
-        if (caName.getResponseText().toLowerCase() === teamCAs[i][0].toLowerCase()) {
-          check = true;
-          team  = teamStart + i;
-        }
-      }
-      
-      if (!check) {
-        ui.alert('Error', '"' + caName.getResponseText() + '" was not found in team ' + team.getResponseText()
-        + '. Please type a different CA Name.', ui.ButtonSet.OK); 
-      }
+      if (caName.getSelectedButton() === ui.Button.CANCEL) return;
     }
-    
-    caName = caName.getResponseText();
   }
   
-  types   = driver('types') + 1; //Plus one to include "Totals"
+  caName  = caName.getResponseText();
+  types   = driver('types') + 1; // Plus one to include "Totals"
   current = team;
   
   for (i = 0; i < types; i++) {
@@ -250,11 +268,12 @@ function removeCA(team, caName, teamSize, teamStart, wasLastTeam) {
     }
     
     teamRows = teamRows.toString();
-    driverUpdateCheck(teamRows, 'teamRows');
+    set('teamRows', teamRows);
   } else {
-    driverUpdateCheck(driver('finalTeamSize')-1, 'finalTeamSize');
+    set('finalTeamSize', driver('finalTeamSize') - 1);
   }
-  ss.toast('"'+caName+'" was deleted successfully!', 'Complete');
+  
+  ss.toast('"' + caName + '" was deleted successfully!', 'Complete');
 }
 
 function driverUpdateCheck(driverVal, type) {
@@ -269,91 +288,28 @@ function driverUpdateCheck(driverVal, type) {
 }
 
 function moveCA() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
-  var master = ss.getSheetByName('Master');
-  var lChart = ss.getSheetByName('LoadingChart');
-  var teamRows = driver('teamRows');
-  var teams = driver('teams');
-  var finalTeamSize = driver('finalTeamSize');
-  var check = false;
-  var initialWasLastTeam = false;
-  var endWasLastTeam = false;
-  var teams = driver('teams');
-  var firstCARow = driver('firstCARow');
-  var teamStart, teamSize, teamCAs, caDSName;
-  var check = false;
+  var initalTeam = ui.prompt('CA Team', 'Please type the initial team of the Client Advisor you wish to move in the box below.'
+                       , ui.ButtonSet.OK_CANCEL);
   
-  while (!check) {
-    var initial_team = ui.prompt('Current Team', 'Please type the current team of the Client Advisor you wish to move in the box below.'
-                                 , ui.ButtonSet.OK_CANCEL);
-    if (initial_team.getSelectedButton() == ui.Button.CANCEL) { return; }
-    for (var i = 0; i < teams.length && !check; i++) {
-      if (initial_team.getResponseText().toLowerCase() == teams[i].toLowerCase()) { 
-        check = true;
-        teamStart = [driver('firstCARow') - 1].concat(driver('teamRows'));
-        if (i+1 < teams.length) { teamSize = teamStart[i+1]-1-teamStart[i]; teamStart = teamStart[i]+1; }
-        else { teamSize = finalTeamSize; teamStart = teamStart[i]+1; initialWasLastTeam = true; }
-      }
-    }
-    if (!check) { ui.alert('Error', 'You have entered an invalid team name. The teams currently are: '
-                           + teams.toString().split(',').join(', '), ui.ButtonSet.OK); }
-  }
+  if (initalTeam.getSelectedButton() === ui.Button.CANCEL) return;
   
-  var end_team = ui.prompt('New Team', 'Please type the team where the Client Advisor should be moved in the box below.', ui.ButtonSet.OK_CANCEL);
+  var finalTeam = ui.prompt('CA Team', 'Please type the initial team of the Client Advisor you wish to move in the box below.'
+                       , ui.ButtonSet.OK_CANCEL);
   
-  if (end_team.getSelectedButton() == ui.Button.CANCEL) { return; }
+  if (finalTeam.getSelectedButton() === ui.Button.CANCEL) return;
   
-  check   = false;
-  teamCAs = master.getRange(teamStart, 1, teamSize).getDisplayValues();
+  var caName = ui.prompt('CA Display Name', 'Please type the name of the Client Advisor you wish to move,\nas you would like'
+                         + ' it to be desplayed, in the box below.', ui.ButtonSet.OK_CANCEL);
   
-  while (!check) {
-    var caName = ui.prompt('CA Name', 'Please type the name of the Client Advisor you wish to delete,\nas appear(s/ed)'
-                           + ' on Sales Activity Daily, in the box below.', ui.ButtonSet.OK_CANCEL);
-    
-    if (caName.getSelectedButton() == ui.Button.CANCEL) return;
-    
-    for (i = 0; i < teamCAs.length; i++) {
-      if (caName.getResponseText().toLowerCase() === teamCAs[i][0].toLowerCase()) {
-        check        = true;
-        initial_team = teamStart + i;
-      }
-    }
-    
-    if (!check) {
-      ui.alert('Error', '"' + caName.getResponseText() + '" was not found in team ' + initial_team.getResponseText()
-      + '. Please type a different CA Name.', ui.ButtonSet.OK); 
-    }
-  }
+  if (caName.getSelectedButton() == ui.Button.CANCEL) return;
   
-  caName   = caName.getResponseText();
-  caDSName = lChart.getRange(initial_team - driver('difference'), 1).getValue();
+  var caDSName = ui.prompt('CA DealerSocket Name', 'Please type the name of Client Advisor as it appears'
+                       + ' in Dealersocket, in the box below.', ui.ButtonSet.OK_CANCEL);
   
-  removeCA(initial_team, caName, teamSize, teamStart, initialWasLastTeam);
+  if (caDSName.getSelectedButton() === ui.Button.CANCEL) return;
   
-  check = false;
-  while (!check) {
-    for (var i = 0; i < teams.length && !check; i++) {
-      if (end_team.getResponseText().toLowerCase() === teams[i].toLowerCase()) { 
-        check    = true;
-        end_team = [driver('firstCARow')].concat(driver('teamRows'));
-        
-        if (i + 1 < teams.length) end_team = end_team[i + 1] - 1;
-        else {
-          end_team       = end_team[i] + finalTeamSize - 1;
-          endWasLastTeam = true;
-        }
-      }
-    }
-    
-    if (!check) {
-      ui.alert('Error', 'You have entered an invalid team name. The teams currently are: ' +
-               teams.toString().split(',').join(', '), ui.ButtonSet.OK);
-      end_team = ui.prompt('New Team', 'Please type the team where the Client Advisor should be moved in the box below.'
-                           , ui.ButtonSet.OK_CANCEL);
-      if (end_team.getSelectedButton() === ui.Button.CANCEL) return;
-    }
-  }
+  removeCA(initalTeam, caName);
   
-  addCA(end_team, caName, caDSName, endWasLastTeam);
+  addCA(finalTeam, caName, caDSName);
 }
